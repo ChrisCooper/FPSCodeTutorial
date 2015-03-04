@@ -14,6 +14,17 @@ AFPSCharacter::AFPSCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 50.0f + BaseEyeHeight);
 	// Allow the pawn to control rotation.
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+
+	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
+	FirstPersonMesh = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("FirstPersonMesh"));
+	FirstPersonMesh->SetOnlyOwnerSee(true);         // only the owning player will see this mesh
+	FirstPersonMesh->AttachParent = FirstPersonCameraComponent;
+	FirstPersonMesh->bCastDynamicShadow = false;
+	FirstPersonMesh->CastShadow = false;
+
+	// everyone but the owner can see the regular body mesh
+	USkeletalMeshComponent* mesh = GetMesh();
+	mesh->SetOwnerNoSee(true);
 }
 
 // Called when the game starts or when spawned
