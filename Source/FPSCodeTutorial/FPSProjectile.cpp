@@ -10,8 +10,8 @@ AFPSProjectile::AFPSProjectile(const FObjectInitializer& ObjectInitializer)
 	// Use a sphere as a simple collision representation
 	CollisionComp = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("SphereComp"));
 	CollisionComp->InitSphereRadius(15.0f);
-	CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
 	RootComponent = CollisionComp;
+	CollisionComp->OnComponentHit.AddDynamic(this, &AFPSProjectile::OnHit);
 
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = ObjectInitializer.CreateDefaultSubobject<UProjectileMovementComponent>(this, TEXT("ProjectileComp"));
@@ -41,4 +41,14 @@ void AFPSProjectile::BeginPlay()
 	Super::BeginPlay();
 	
 }
+
+void AFPSProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor && (OtherActor != this) && OtherComp && OtherActor->IsRootComponentMovable())
+	{
+		OtherComp->AddImpulseAtLocation(ProjectileMovement->Velocity * 100.0f, Hit.ImpactPoint);
+	}
+}
+
+
 
