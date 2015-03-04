@@ -20,6 +20,9 @@ AFPSProjectile::AFPSProjectile(const FObjectInitializer& ObjectInitializer)
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
 	ProjectileMovement->Bounciness = 0.3f;
+
+	// Die after 3 seconds by default
+	InitialLifeSpan = 3.0f;
 }
 
 void AFPSProjectile::InitVelocity(const FVector& ShootDirection)

@@ -53,7 +53,7 @@ void AFPSCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompon
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AFPSCharacter::OnStartJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AFPSCharacter::OnStopJump);
 
-	InputComponent->BindAction("Jump", IE_Pressed, this, &AFPSCharacter::OnFire);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &AFPSCharacter::OnFire);
 }
 
 void AFPSCharacter::MoveForward(float Value)
