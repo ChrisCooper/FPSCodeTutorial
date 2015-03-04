@@ -2,6 +2,7 @@
 
 #include "FPSCodeTutorial.h"
 #include "FPSCharacter.h"
+#include "FPSProjectile.h"
 
 
 AFPSCharacter::AFPSCharacter(const FObjectInitializer& ObjectInitializer)
@@ -38,13 +39,6 @@ void AFPSCharacter::BeginPlay()
 	}
 }
 
-// Called every frame
-void AFPSCharacter::Tick( float DeltaTime )
-{
-	Super::Tick( DeltaTime );
-
-}
-
 // Called to bind functionality to input
 void AFPSCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
@@ -58,6 +52,8 @@ void AFPSCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompon
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AFPSCharacter::OnStartJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AFPSCharacter::OnStopJump);
+
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AFPSCharacter::OnFire);
 }
 
 void AFPSCharacter::MoveForward(float Value)
@@ -96,4 +92,35 @@ void AFPSCharacter::OnStartJump()
 void AFPSCharacter::OnStopJump()
 {
 	bPressedJump = false;
+}
+
+void AFPSCharacter::OnFire()
+{
+	// try and fire a projectile
+	if (ProjectileClass != NULL)
+	{
+		// Get the camera transform
+		FVector CameraLoc;
+		FRotator CameraRot;
+		GetActorEyesViewPoint(CameraLoc, CameraRot);
+		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the camera to find the final muzzle position
+		FVector const MuzzleLocation = CameraLoc + FTransform(CameraRot).TransformVector(MuzzleOffset);
+		FRotator MuzzleRotation = CameraRot;
+		MuzzleRotation.Pitch += 10.0f;          // skew the aim upwards a bit
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = Instigator;
+			// spawn the projectile at the muzzle
+			AFPSProjectile* const Projectile = World->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				// find launch direction
+				FVector const LaunchDir = MuzzleRotation.Vector();
+				Projectile->InitVelocity(LaunchDir);
+			}
+		}
+	}
 }
