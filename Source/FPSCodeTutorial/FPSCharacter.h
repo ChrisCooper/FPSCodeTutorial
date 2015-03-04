@@ -11,6 +11,9 @@ class FPSCODETUTORIAL_API AFPSCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	// Constructor for AFPSCharacter
+	AFPSCharacter(const FObjectInitializer& ObjectInitializer);
+
 	// Sets default values for this character's properties
 	AFPSCharacter();
 
@@ -22,6 +25,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+
+	/** First person camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	UCameraComponent* FirstPersonCameraComponent;
 
 protected:
 	// Handles moving forward/backward
