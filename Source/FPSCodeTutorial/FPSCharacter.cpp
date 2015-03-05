@@ -19,9 +19,9 @@ AFPSCharacter::AFPSCharacter(const FObjectInitializer& ObjectInitializer)
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	FirstPersonMesh = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("FirstPersonMesh"));
 	FirstPersonMesh->SetOnlyOwnerSee(true);         // only the owning player will see this mesh
-	FirstPersonMesh->AttachParent = FirstPersonCameraComponent;
-	FirstPersonMesh->bCastDynamicShadow = false;
-	FirstPersonMesh->CastShadow = false;
+	FirstPersonMesh->AttachParent = CapsuleComponent;
+	FirstPersonMesh->bCastDynamicShadow = true;
+	FirstPersonMesh->CastShadow = true;
 
 	// everyone but the owner can see the regular body mesh
 	USkeletalMeshComponent* mesh = GetMesh();
